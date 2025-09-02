@@ -1,0 +1,1 @@
+A web app that extracts transcripts from YouTube videos, generates accurate summaries using transformer models (BART), and automatically creates difficulty-controlled quizzes using a large language model (e.g., Gemini API).
