@@ -1,0 +1,43 @@
+#--------------Backend-----------------------#
+
+# Python cache
+__pycache__
+*.py[cod]
+*$py.class
+
+# Virtual environments
+backend/venv
+
+# Django stuff
+backend/db.sqlite3
+
+
+# Environment variables
+.env
+*.env
+
+
+
+#-----------Frontend--------------------#
+
+# dependencies
+frontend/node_modules
+frontend/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
