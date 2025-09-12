@@ -76,3 +76,22 @@
   background-color: #282c34;
   border-radius: 5px;
 }
+
+/* Add this style to your App.css */
+
+.generate-quiz-button {
+  margin-top: 1.5rem;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: none;
+  background-color: #61dafb;
+  color: #282c34;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.generate-quiz-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

@@ -7,6 +7,7 @@ __pycache__
 
 # Virtual environments
 backend/venv
+backend/venv-311
 
 # Django stuff
 backend/db.sqlite3
