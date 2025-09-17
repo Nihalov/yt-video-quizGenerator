@@ -70,10 +70,10 @@ def generate_quiz(request):
         {transcript}
         """
         quiz_response = model.generate_content(quiz_prompt)
-        print(quiz_response)
+        
         quiz_json_string = quiz_response.text.replace("```json", "").replace("```", "").strip()
         quiz_data = json.loads(quiz_json_string)
-        print(quiz_data)
+        
         return Response({'quiz': quiz_data})
 
     except Exception as e:
