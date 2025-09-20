@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: django-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mounts the local 'backend' code into the container for live reloading
+      - ./backend:/app
+    env_file:
+      # Loads environment variables from the .env file (for your API key)
+      - ./backend/.env
+
+  frontend:
+    build: ./frontend
+    container_name: react-frontend
+    ports:
+      - "3000:80" # Maps your local port 3000 to the container's port 80
+    depends_on:
+      - backend # Tells Docker to start the backend before the frontend

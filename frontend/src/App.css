@@ -1,7 +1,7 @@
 /* frontend/src/App.css */
 .App {
   text-align: center;
-  background-color: #282c34;
+  background-color: #29517e;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -94,4 +94,44 @@
 .generate-quiz-button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
+}
+
+/* Add this to your App.css file */
+.score-container {
+  background-color: #282c34;
+  border: 1px solid #61dafb;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.score-container h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #61dafb;
+}
+
+/* Add these new styles to your App.css file */
+
+.option-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.feedback-correct {
+  margin-top: 10px;
+  color: #28a745; /* Green */
+  font-weight: bold;
+}
+
+.feedback-incorrect {
+  margin-top: 10px;
+  color: #dc3545; /* Red */
+  font-weight: bold;
+}
+
+/* Remove or replace the old submit-quiz-button style if it exists */
+.submit-quiz-button {
+  display: none; 
 }

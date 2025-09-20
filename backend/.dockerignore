@@ -1,0 +1,19 @@
+# Ignore the Python virtual environment
+venv
+venv-311
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore the folder for downloaded audio files
+audio/
+
+# Ignore local environment file (it's loaded via env_file in docker-compose)
+.env
+
+# Ignore IDE/editor folders
+.vscode/
+.idea/

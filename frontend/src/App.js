@@ -10,21 +10,22 @@ function App() {
   const [data, setData] = useState({ transcript: '', summary: '', quiz: null });
   const [error, setError] = useState('');
   const [selectedAnswers, setSelectedAnswers] = useState({});
-  const [showResults, setShowResults] = useState(false);
+  const [score, setScore] = useState(0);
 
   const handleSummarize = async (e) => {
     e.preventDefault();
     setError('');
     setData({ transcript: '', summary: '', quiz: null });
     setSelectedAnswers({});
-    setShowResults(false);
+    setScore(0);
     setIsLoadingSummary(true);
 
     try {
       const response = await axios.post('http://localhost:8000/api/summarize/', {
         video_url: videoUrl,
       });
-      setData({ ...data, transcript: response.data.transcript, summary: response.data.summary });
+      // Correct way to update state to not lose the quiz part later
+      setData(prevData => ({ ...prevData, transcript: response.data.transcript, summary: response.data.summary }));
     } catch (err) {
       setError('Failed to generate summary. Please check the URL and try again.');
     } finally {
@@ -39,19 +40,41 @@ function App() {
       const response = await axios.post('http://localhost:8000/api/quiz/', {
         transcript: data.transcript,
       });
-      setData({ ...data, quiz: response.data.quiz });
+      setData(prevData => ({ ...prevData, quiz: response.data.quiz }));
     } catch (err) {
       setError('Failed to generate quiz.');
     } finally {
       setIsLoadingQuiz(false);
     }
   };
-  
+
+  // --- NEW LOGIC FOR INSTANT FEEDBACK ---
+  const handleAnswerSelection = (question, selectedOption, questionIndex) => {
+    // Prevent changing the answer after it has been selected
+    if (selectedAnswers.hasOwnProperty(questionIndex)) {
+      return;
+    }
+
+    // Check if the selected answer is correct and update the score
+    if (selectedOption === question.answer) {
+      setScore(prevScore => prevScore + 1);
+    }
+
+    // Store the selected answer
+    setSelectedAnswers(prevAnswers => ({
+      ...prevAnswers,
+      [questionIndex]: selectedOption,
+    }));
+  };
+
   const getOptionClassName = (question, option, index) => {
-    if (!showResults) return selectedAnswers[index] === option ? 'selected' : '';
-    if (option === question.answer) return 'correct';
-    if (selectedAnswers[index] === option) return 'incorrect';
-    return '';
+    const hasBeenAnswered = selectedAnswers.hasOwnProperty(index);
+    if (!hasBeenAnswered) return ''; // No selection yet
+    
+    if (option === question.answer) return 'correct'; // Always show correct answer in green
+    if (selectedAnswers[index] === option) return 'incorrect'; // If this wrong option was selected, show red
+    
+    return 'disabled'; // For other wrong options
   };
 
   return (
@@ -78,7 +101,6 @@ function App() {
             <h2>Summary</h2>
             <p className="summary-text">{data.summary}</p>
             
-            {/* Quiz Section */}
             <div className="quiz-container">
               {!data.quiz ? (
                 <button onClick={handleGenerateQuiz} disabled={isLoadingQuiz} className="generate-quiz-button">
@@ -87,26 +109,36 @@ function App() {
               ) : (
                 <>
                   <h2>Test Your Knowledge</h2>
-                  {data.quiz.map((q, index) => (
-                    <div key={index} className="question-block">
-                      <p className="question-text">{index + 1}. {q.question}</p>
-                      <div className="options-list">
-                        {q.options.map((option, optIndex) => (
-                          <button
-                            key={optIndex}
-                            className={`option-button ${getOptionClassName(q, option, index)}`}
-                            onClick={() => !showResults && setSelectedAnswers({...selectedAnswers, [index]: option})}
-                            disabled={showResults}
-                          >
-                            {option}
-                          </button>
-                        ))}
+                  <div className="score-container">
+                    <h3>Score: {score} / {data.quiz.length}</h3>
+                  </div>
+
+                  {data.quiz.map((q, index) => {
+                    const hasBeenAnswered = selectedAnswers.hasOwnProperty(index);
+                    return (
+                      <div key={index} className="question-block">
+                        <p className="question-text">{index + 1}. {q.question}</p>
+                        <div className="options-list">
+                          {q.options.map((option, optIndex) => (
+                            <button
+                              key={optIndex}
+                              className={`option-button ${getOptionClassName(q, option, index)}`}
+                              onClick={() => handleAnswerSelection(q, option, index)}
+                              disabled={hasBeenAnswered}
+                            >
+                              {option}
+                            </button>
+                          ))}
+                        </div>
+                        {/* --- NEW: Instant feedback text --- */}
+                        {hasBeenAnswered && (
+                          <p className={selectedAnswers[index] === q.answer ? 'feedback-correct' : 'feedback-incorrect'}>
+                            {selectedAnswers[index] === q.answer ? 'Correct!' : 'Incorrect.'}
+                          </p>
+                        )}
                       </div>
-                    </div>
-                  ))}
-                  {!showResults && (
-                     <button className="submit-quiz-button" onClick={() => setShowResults(true)}>Check Answers</button>
-                  )}
+                    );
+                  })}
                 </>
               )}
             </div>
