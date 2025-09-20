@@ -139,7 +139,7 @@ def generate_quiz(request):
     try:
         model = genai.GenerativeModel('gemini-2.5-pro')
         quiz_prompt = f"""
-        Based on the following transcript, generate a 5-question multiple-choice quiz.
+        Based on the following transcript, generate a 7-question multiple-choice quiz.
         Return the quiz as a valid JSON array where each object has "question", "options" (an array of 4 strings), and "answer" (the string of the correct option).
 
         Transcript:
