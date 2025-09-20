@@ -1,137 +1,235 @@
-/* frontend/src/App.css */
+/* General App Styling */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f4f7f9;
+}
+
 .App {
-  text-align: center;
-  background-color: #29517e;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
   padding: 2rem;
+  color: #333;
 }
 
-.App-header h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.video-form {
-  margin: 2rem 0;
-  display: flex;
-  gap: 10px;
-}
-
-.video-form input {
-  padding: 10px;
-  font-size: 1rem;
-  border-radius: 5px;
-  border: none;
-  width: 40vw;
-}
-
-.video-form button {
-  padding: 10px 20px;
-  font-size: 1rem;
-  border-radius: 5px;
-  border: none;
-  background-color: #61dafb;
-  color: #282c34;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.video-form button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.error-message {
-  color: #ff6b6b;
-  margin-top: 1rem;
-}
-
-.results-container {
-  margin-top: 2rem;
-  text-align: left;
-  width: 70%;
-  background-color: #3c414d;
-  padding: 1.5rem;
-  border-radius: 8px;
-}
-
-.results-container h2 {
-  border-bottom: 2px solid #61dafb;
-  padding-bottom: 0.5rem;
-}
-
-.summary-text,
-.transcript-text {
-  font-size: 0.8rem;
-  line-height: 1.6;
-  max-height: 300px;
-  overflow-y: auto;
-  padding: 10px;
-  background-color: #282c34;
-  border-radius: 5px;
-}
-
-/* Add this style to your App.css */
-
-.generate-quiz-button {
-  margin-top: 1.5rem;
-  padding: 10px 20px;
-  font-size: 1rem;
-  border-radius: 5px;
-  border: none;
-  background-color: #61dafb;
-  color: #282c34;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.generate-quiz-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-/* Add this to your App.css file */
-.score-container {
-  background-color: #282c34;
-  border: 1px solid #61dafb;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
+.main-container {
+  width: 100%;
+  max-width: 800px;
   text-align: center;
 }
 
-.score-container h3 {
-  margin: 0;
-  font-size: 1.2rem;
-  color: #61dafb;
+h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
 }
 
-/* Add these new styles to your App.css file */
+.subtitle {
+  font-size: 1.2rem;
+  color: #7f8c8d;
+  margin-bottom: 2rem;
+}
 
-.option-button.disabled {
-  opacity: 0.5;
+/* Form Styling */
+.video-form {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.video-form input {
+  width: 50%;
+  padding: 12px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #bdc3c7;
+}
+
+.video-form button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: none;
+  background-color: #8e44ad;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.video-form button:hover {
+  background-color: #9b59b6;
+}
+
+.video-form button:disabled {
+  background-color: #bdc3c7;
   cursor: not-allowed;
 }
 
-.feedback-correct {
-  margin-top: 10px;
-  color: #28a745; /* Green */
+/* Results & Sections */
+.results-container {
+  margin-top: 2rem;
+  text-align: left;
+}
+
+.summary-section, .quiz-section-wrapper {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+}
+
+h2 {
+  color: #2c3e50;
+  border-bottom: 2px solid #f39c12;
+  padding-bottom: 0.5rem;
+  margin-top: 0;
+}
+
+/* Quiz Styling */
+.quiz-container {
+  margin-top: 1.5rem;
+}
+
+.quiz-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.quiz-stats {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  display: flex;
+  gap: 1rem;
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 8px;
+  background-color: #ecf0f1;
+  border-radius: 4px;
+  margin-bottom: 2rem;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #8e44ad;
+  border-radius: 4px;
+  transition: width 0.3s ease-in-out;
+}
+
+.question-block {
+  margin-bottom: 1.5rem;
+}
+
+.question-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.option-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  text-align: left;
+  background-color: white;
+  border: 1px solid #bdc3c7;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.option-button:hover:not(:disabled) {
+  border-color: #8e44ad;
+  background-color: #f8f2ff;
+}
+
+.option-button .icon {
   font-weight: bold;
 }
 
-.feedback-incorrect {
+.option-button.correct {
+  border-color: #27ae60;
+  background-color: #27ae60;
+  color: white;
+}
+
+.option-button.incorrect {
+  border-color: #c0392b;
+  background-color: #c0392b;
+  color: white;
+}
+
+.option-button.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.feedback-correct, .feedback-incorrect {
   margin-top: 10px;
-  color: #dc3545; /* Red */
+  font-weight: bold;
+  padding-left: 5px;
+}
+
+.feedback-correct { color: #27ae60; }
+.feedback-incorrect { color: #c0392b; }
+
+.error-message {
+  color: #c0392b;
   font-weight: bold;
 }
 
-/* Remove or replace the old submit-quiz-button style if it exists */
-.submit-quiz-button {
-  display: none; 
+.loader {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #8e44ad;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.generate-quiz-button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: none;
+  background-color: #f39c12;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+  margin-top: 1rem;
+}
+
+.generate-quiz-button:hover {
+  background-color: #e67e22;
+}
+
+.generate-quiz-button:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
 }

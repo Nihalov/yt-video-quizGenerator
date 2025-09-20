@@ -1,7 +1,16 @@
-// frontend/src/App.js
 import React, { useState } from 'react';
 import axios from 'axios';
 import './App.css';
+
+// A simple progress bar component
+const ProgressBar = ({ current, total }) => {
+  const percentage = total > 0 ? (current / total) * 100 : 0;
+  return (
+    <div className="progress-bar-container">
+      <div className="progress-bar" style={{ width: `${percentage}%` }}></div>
+    </div>
+  );
+};
 
 function App() {
   const [videoUrl, setVideoUrl] = useState('');
@@ -24,7 +33,6 @@ function App() {
       const response = await axios.post('http://localhost:8000/api/summarize/', {
         video_url: videoUrl,
       });
-      // Correct way to update state to not lose the quiz part later
       setData(prevData => ({ ...prevData, transcript: response.data.transcript, summary: response.data.summary }));
     } catch (err) {
       setError('Failed to generate summary. Please check the URL and try again.');
@@ -41,26 +49,20 @@ function App() {
         transcript: data.transcript,
       });
       setData(prevData => ({ ...prevData, quiz: response.data.quiz }));
-    } catch (err) {
+    } catch (err) { // <-- THE FIX IS HERE
       setError('Failed to generate quiz.');
     } finally {
       setIsLoadingQuiz(false);
     }
   };
 
-  // --- NEW LOGIC FOR INSTANT FEEDBACK ---
   const handleAnswerSelection = (question, selectedOption, questionIndex) => {
-    // Prevent changing the answer after it has been selected
-    if (selectedAnswers.hasOwnProperty(questionIndex)) {
-      return;
-    }
+    if (selectedAnswers.hasOwnProperty(questionIndex)) return;
 
-    // Check if the selected answer is correct and update the score
     if (selectedOption === question.answer) {
       setScore(prevScore => prevScore + 1);
     }
 
-    // Store the selected answer
     setSelectedAnswers(prevAnswers => ({
       ...prevAnswers,
       [questionIndex]: selectedOption,
@@ -69,18 +71,20 @@ function App() {
 
   const getOptionClassName = (question, option, index) => {
     const hasBeenAnswered = selectedAnswers.hasOwnProperty(index);
-    if (!hasBeenAnswered) return ''; // No selection yet
-    
-    if (option === question.answer) return 'correct'; // Always show correct answer in green
-    if (selectedAnswers[index] === option) return 'incorrect'; // If this wrong option was selected, show red
-    
-    return 'disabled'; // For other wrong options
+    if (!hasBeenAnswered) return '';
+    if (option === question.answer) return 'correct';
+    if (selectedAnswers[index] === option) return 'incorrect';
+    return 'disabled';
   };
+
+  const answeredQuestions = Object.keys(selectedAnswers).length;
 
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>YouTube Video Summarizer & Quiz Generator 🚀</h1>
+      <div className="main-container">
+        <h1>YouTube Study Tool 🚀</h1>
+        <p className="subtitle">Get summaries and quizzes from any educational video.</p>
+        
         <form onSubmit={handleSummarize} className="video-form">
           <input
             type="text"
@@ -90,28 +94,36 @@ function App() {
             required
           />
           <button type="submit" disabled={isLoadingSummary}>
-            {isLoadingSummary ? 'Summarizing...' : 'Summarize'}
+            {isLoadingSummary ? 'Processing...' : 'Summarize'}
           </button>
         </form>
 
         {error && <p className="error-message">{error}</p>}
 
-        {data.summary && (
+        {isLoadingSummary && <div className="loader"></div>}
+
+        {data.summary && !isLoadingSummary && (
           <div className="results-container">
-            <h2>Summary</h2>
-            <p className="summary-text">{data.summary}</p>
+            <div className="summary-section">
+              <h2>Summary</h2>
+              <p>{data.summary}</p>
+            </div>
             
-            <div className="quiz-container">
+            <div className="quiz-section-wrapper">
               {!data.quiz ? (
                 <button onClick={handleGenerateQuiz} disabled={isLoadingQuiz} className="generate-quiz-button">
-                  {isLoadingQuiz ? 'Generating Quiz...' : 'Generate Quiz'}
+                  {isLoadingQuiz ? 'Generating...' : 'Generate Quiz'}
                 </button>
               ) : (
-                <>
-                  <h2>Test Your Knowledge</h2>
-                  <div className="score-container">
-                    <h3>Score: {score} / {data.quiz.length}</h3>
+                <div className="quiz-container">
+                  <div className="quiz-header">
+                    <h2>Knowledge Quiz</h2>
+                    <div className="quiz-stats">
+                      <span>Score: {score} / {data.quiz.length}</span>
+                      <span>Progress: {answeredQuestions} / {data.quiz.length}</span>
+                    </div>
                   </div>
+                  <ProgressBar current={answeredQuestions} total={data.quiz.length} />
 
                   {data.quiz.map((q, index) => {
                     const hasBeenAnswered = selectedAnswers.hasOwnProperty(index);
@@ -126,11 +138,12 @@ function App() {
                               onClick={() => handleAnswerSelection(q, option, index)}
                               disabled={hasBeenAnswered}
                             >
-                              {option}
+                              <span>{option}</span>
+                              {hasBeenAnswered && option === q.answer && <span className="icon">✓</span>}
+                              {hasBeenAnswered && selectedAnswers[index] === option && option !== q.answer && <span className="icon">✗</span>}
                             </button>
                           ))}
                         </div>
-                        {/* --- NEW: Instant feedback text --- */}
                         {hasBeenAnswered && (
                           <p className={selectedAnswers[index] === q.answer ? 'feedback-correct' : 'feedback-incorrect'}>
                             {selectedAnswers[index] === q.answer ? 'Correct!' : 'Incorrect.'}
@@ -139,15 +152,12 @@ function App() {
                       </div>
                     );
                   })}
-                </>
+                </div>
               )}
             </div>
-
-            <h2>Full Transcript</h2>
-            <p className="transcript-text">{data.transcript}</p>
           </div>
         )}
-      </header>
+      </div>
     </div>
   );
 }
